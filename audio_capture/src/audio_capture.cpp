@@ -108,6 +108,7 @@ namespace audio_transport
           link_ok = gst_element_link_many(_source, _filter, _convert, _encode, _sink, NULL);
         } else if (_format == "wave") {
           GstCaps *caps;
+ #if 0
           caps = gst_caps_new_simple("audio/x-raw",
                                      "channels", G_TYPE_INT, _channels,
                                      "width",    G_TYPE_INT, _depth,
@@ -115,7 +116,9 @@ namespace audio_transport
                                      "rate",     G_TYPE_INT, _sample_rate,
                                      "signed",   G_TYPE_BOOLEAN, TRUE,
                                      NULL);
-
+#else // audio_capture ---> pcm ---> audio_play
+		      caps = gst_caps_from_string("audio/x-raw,format=S16LE,rate=16000,channels=1,layout=interleaved");
+#endif
           g_object_set( G_OBJECT(_sink), "caps", caps, NULL);
           gst_caps_unref(caps);
           gst_bin_add_many( GST_BIN(_pipeline), _source, _sink, NULL);
